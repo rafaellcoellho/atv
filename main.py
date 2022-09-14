@@ -4,19 +4,53 @@ import pprint
 from datetime import date
 from typing import Optional, Sequence
 
+CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.todo_app_cli"
+
+
+def obter_caminho_arquivo_do_dia(dia: date) -> str:
+    nome_do_arquivo = f"{dia.strftime('%Y-%m-%d')}.txt"
+    caminho_para_arquivo = f"{CAMINHO_PASTA_ARQUIVOS}/{nome_do_arquivo}"
+
+    return caminho_para_arquivo
+
+
+def existe_pasta_de_arquivos() -> bool:
+    return os.path.isdir(CAMINHO_PASTA_ARQUIVOS)
+
+
+def escrever_tarefa_no_arquivo(descricao_tarefa: str, caminho_para_arquivo_dia_atual: str):
+    with open(caminho_para_arquivo_dia_atual, "a+") as arquivo:
+        arquivo.write(f"{descricao_tarefa} | pendente\n")
+
+
+def ler_arquivo_de_tarefas(caminho_para_arquivo: str) -> list[str]:
+    with open(caminho_para_arquivo, "r") as arquivo:
+        linhas = arquivo.readlines()
+
+    return linhas
+
 
 def comando_fazer(descricao_tarefa: str) -> int:
-    caminho_home_usuario_atual = os.getenv("HOME")
-    caminho_pasta_arquivo_tarefas = f"{caminho_home_usuario_atual}/.todo_app_cli"
-    existe_pasta_de_arquivos = os.path.isdir(caminho_pasta_arquivo_tarefas)
+    if not existe_pasta_de_arquivos():
+        os.makedirs(CAMINHO_PASTA_ARQUIVOS)
 
-    if not existe_pasta_de_arquivos:
-        os.makedirs(caminho_pasta_arquivo_tarefas)
+    caminho_para_arquivo_dia_atual = obter_caminho_arquivo_do_dia(date.today())
+    escrever_tarefa_no_arquivo(descricao_tarefa, caminho_para_arquivo_dia_atual)
 
-    caminho_para_arquivo_dia_atual = f"{caminho_pasta_arquivo_tarefas}/{date.today().strftime('%Y-%m-%d')}.txt"
+    return 0
 
-    with open(caminho_para_arquivo_dia_atual, "a+") as arquivo:
-        arquivo.write(f"\n{descricao_tarefa} | pendente")
+
+def comando_tarefas() -> int:
+    if not existe_pasta_de_arquivos():
+        print("Não existe nenhuma tarefa nesse dia!")
+    else:
+        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(date.today())
+        linhas = ler_arquivo_de_tarefas(caminho_para_arquivo_do_dia)
+
+        for indice, linha in enumerate(linhas):
+            descricao, situacao = linha.split("|")
+            simbolo_situacao = "v" if situacao == "realizado" else " "
+            print(f"{indice}. [{simbolo_situacao}] - {descricao}")
 
     return 0
 
@@ -32,12 +66,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     )
     parser_comando_fazer.add_argument("descricao", help="descrição da tarefa a ser feita")
 
+    subparsers.add_parser(
+        "tarefas",
+        help="mostra todas as tarefas cadastradas no dia atual"
+    )
+
     args = parser_principal.parse_args(argv)
 
     pprint.pprint(vars(args))
 
     if args.comando == "fazer":
         return comando_fazer(args.descricao)
+    if args.comando == "tarefas":
+        return comando_tarefas()
     else:
         raise NotImplementedError(f"Comando {args.comando} não implementado")
 
