@@ -30,7 +30,7 @@ def ler_arquivo_de_tarefas(caminho_para_arquivo: str) -> list[str]:
     return linhas
 
 
-def comando_fazer(descricao_tarefa: str) -> int:
+def comando_adicionar(descricao_tarefa: str) -> int:
     if not existe_pasta_de_arquivos():
         os.makedirs(CAMINHO_PASTA_ARQUIVOS)
 
@@ -56,15 +56,15 @@ def comando_tarefas() -> int:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    parser_principal = argparse.ArgumentParser(prog="tdc")
+    parser_principal = argparse.ArgumentParser(prog="tac")
 
     subparsers = parser_principal.add_subparsers(dest="comando", required=True)
 
-    parser_comando_fazer = subparsers.add_parser(
-        "fazer",
+    parser_comando_adicionar = subparsers.add_parser(
+        "adicionar",
         help="adicionar uma nova atividade no dia atual"
     )
-    parser_comando_fazer.add_argument("descricao", help="descrição da tarefa a ser feita")
+    parser_comando_adicionar.add_argument("descricao", help="descrição da tarefa a ser feita")
 
     subparsers.add_parser(
         "tarefas",
@@ -75,8 +75,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     pprint.pprint(vars(args))
 
-    if args.comando == "fazer":
-        return comando_fazer(args.descricao)
+    if args.comando == "adicionar":
+        return comando_adicionar(args.descricao)
     if args.comando == "tarefas":
         return comando_tarefas()
     else:
