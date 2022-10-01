@@ -40,7 +40,7 @@ def comando_adicionar(descricao_tarefa: str) -> int:
     return 0
 
 
-def comando_tarefas() -> int:
+def comando_listar() -> int:
     if not existe_pasta_de_arquivos():
         print("Não existe nenhuma tarefa nesse dia!")
     else:
@@ -49,7 +49,7 @@ def comando_tarefas() -> int:
 
         for indice, linha in enumerate(linhas):
             descricao, situacao = linha.split("|")
-            simbolo_situacao = "v" if situacao == "realizado" else " "
+            simbolo_situacao = "v" if "realizado" in situacao else " "
             print(f"{indice}. [{simbolo_situacao}] - {descricao}")
 
     return 0
@@ -67,7 +67,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser_comando_adicionar.add_argument("descricao", help="descrição da tarefa a ser feita")
 
     subparsers.add_parser(
-        "tarefas",
+        "listar",
         help="mostra todas as tarefas cadastradas no dia atual"
     )
 
@@ -77,8 +77,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     if args.comando == "adicionar":
         return comando_adicionar(args.descricao)
-    if args.comando == "tarefas":
-        return comando_tarefas()
+    if args.comando == "listar":
+        return comando_listar()
     else:
         raise NotImplementedError(f"Comando {args.comando} não implementado")
 
