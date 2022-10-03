@@ -45,6 +45,20 @@ def remover_linha_do_arquivo(caminho_para_arquivo: str, indice: int):
                 arquivo.write(linha)
 
 
+def mudar_status_de_atividade(caminho_para_arquivo: str, indice: int, status: str):
+    with open(caminho_para_arquivo, "r+") as arquivo:
+        linhas = arquivo.readlines()
+        arquivo.seek(0)
+        arquivo.truncate()
+
+        for indice_do_arquivo, linha in enumerate(linhas):
+            if indice_do_arquivo == int(indice):
+                descricao, _ = linha.split("|")
+                arquivo.write(f"{descricao} | {status}\n")
+            else:
+                arquivo.write(linha)
+
+
 def comando_adicionar(descricao_tarefa: str) -> int:
     if not existe_pasta_de_arquivos():
         os.makedirs(CAMINHO_PASTA_ARQUIVOS)
@@ -64,7 +78,7 @@ def comando_listar() -> int:
 
         for indice, linha in enumerate(linhas):
             descricao, situacao = linha.split("|")
-            simbolo_situacao = "v" if "realizado" in situacao else " "
+            simbolo_situacao = "v" if "concluida" in situacao else " "
             print(f"{indice}. [{simbolo_situacao}] - {descricao}")
 
     return 0
@@ -79,11 +93,13 @@ def comando_remover(indice: int) -> int:
 
     return 0
 
+
 def comando_concluir(indice: int) -> int:
     if not existe_arquivo_para_o_dia(date.today()):
         print("Não existe nenhuma tarefa nesse dia!")
     else:
-        print(f"Concluindo tarefa no indice {indice}")
+        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(date.today())
+        mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "concluida")
 
     return 0
 
