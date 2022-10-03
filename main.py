@@ -71,11 +71,19 @@ def comando_listar() -> int:
 
 
 def comando_remover(indice: int) -> int:
-    if not existe_pasta_de_arquivos():
+    if not existe_arquivo_para_o_dia(date.today()):
         print("Não existe nenhuma tarefa nesse dia!")
     else:
         caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(date.today())
         remover_linha_do_arquivo(caminho_para_arquivo_do_dia, indice)
+
+    return 0
+
+def comando_concluir(indice: int) -> int:
+    if not existe_arquivo_para_o_dia(date.today()):
+        print("Não existe nenhuma tarefa nesse dia!")
+    else:
+        print(f"Concluindo tarefa no indice {indice}")
 
     return 0
 
@@ -102,6 +110,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     )
     parser_comando_remover.add_argument("indice", help="indice da tarefa a ser deletada")
 
+    parser_comando_concluir = subparsers.add_parser(
+        "concluir",
+        help="concluir uma atividade no dia atual"
+    )
+    parser_comando_concluir .add_argument("indice", help="indice da tarefa a ser deletada")
+
     args = parser_principal.parse_args(argv)
 
     pprint.pprint(vars(args))
@@ -112,6 +126,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return comando_listar()
     if args.comando == "remover":
         return comando_remover(args.indice)
+    if args.comando == "concluir":
+        return comando_concluir(args.indice)
     else:
         raise NotImplementedError(f"Comando {args.comando} não implementado")
 
