@@ -55,6 +55,15 @@ def comando_listar() -> int:
     return 0
 
 
+def comando_remover(indice: int) -> int:
+    if not existe_pasta_de_arquivos():
+        print("Não existe nenhuma tarefa nesse dia!")
+    else:
+        print(f"removendo arquivo no indice: {indice}")
+
+    return 0
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser_principal = argparse.ArgumentParser(prog="tac")
 
@@ -71,6 +80,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         help="mostra todas as tarefas cadastradas no dia atual"
     )
 
+    parser_comando_remover = subparsers.add_parser(
+        "remover",
+        help="remover uma atividade no dia atual"
+    )
+    parser_comando_remover.add_argument("indice", help="indice da tarefa a ser deletada")
+
     args = parser_principal.parse_args(argv)
 
     pprint.pprint(vars(args))
@@ -79,6 +94,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return comando_adicionar(args.descricao)
     if args.comando == "listar":
         return comando_listar()
+    if args.comando == "remover":
+        return comando_remover(args.indice)
     else:
         raise NotImplementedError(f"Comando {args.comando} não implementado")
 
