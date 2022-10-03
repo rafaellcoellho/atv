@@ -18,6 +18,10 @@ def existe_pasta_de_arquivos() -> bool:
     return os.path.isdir(CAMINHO_PASTA_ARQUIVOS)
 
 
+def existe_arquivo_para_o_dia(dia: date) -> bool:
+    return os.path.isfile(obter_caminho_arquivo_do_dia(dia))
+
+
 def escrever_tarefa_no_arquivo(descricao_tarefa: str, caminho_para_arquivo_dia_atual: str):
     with open(caminho_para_arquivo_dia_atual, "a+") as arquivo:
         arquivo.write(f"{descricao_tarefa} | pendente\n")
@@ -28,6 +32,17 @@ def ler_arquivo_de_tarefas(caminho_para_arquivo: str) -> list[str]:
         linhas = arquivo.readlines()
 
     return linhas
+
+
+def remover_linha_do_arquivo(caminho_para_arquivo: str, indice: int):
+    with open(caminho_para_arquivo, "r+") as arquivo:
+        linhas = arquivo.readlines()
+        arquivo.seek(0)
+        arquivo.truncate()
+
+        for indice_do_arquivo, linha in enumerate(linhas):
+            if indice_do_arquivo != int(indice):
+                arquivo.write(linha)
 
 
 def comando_adicionar(descricao_tarefa: str) -> int:
@@ -41,7 +56,7 @@ def comando_adicionar(descricao_tarefa: str) -> int:
 
 
 def comando_listar() -> int:
-    if not existe_pasta_de_arquivos():
+    if not existe_arquivo_para_o_dia(date.today()):
         print("Não existe nenhuma tarefa nesse dia!")
     else:
         caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(date.today())
@@ -59,7 +74,8 @@ def comando_remover(indice: int) -> int:
     if not existe_pasta_de_arquivos():
         print("Não existe nenhuma tarefa nesse dia!")
     else:
-        print(f"removendo arquivo no indice: {indice}")
+        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(date.today())
+        remover_linha_do_arquivo(caminho_para_arquivo_do_dia, indice)
 
     return 0
 
