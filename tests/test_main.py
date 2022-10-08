@@ -1,7 +1,7 @@
 import argparse
 from datetime import date
 
-from main import main, executa_comando, existe_arquivo_para_o_dia, obter_caminho_arquivo_do_dia
+from tac.main import main, executa_comando, existe_arquivo_para_o_dia, obter_caminho_arquivo_do_dia
 
 
 def test_comando_adicionar_atividade(tmp_path):

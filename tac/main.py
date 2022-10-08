@@ -1,6 +1,5 @@
 import argparse
 import os
-import pprint
 from datetime import date
 from typing import Optional, Sequence
 
