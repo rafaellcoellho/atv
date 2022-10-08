@@ -11,7 +11,6 @@ def test_comando_adicionar_atividade(tmp_path):
 
     executa_comando(argumentos, caminho_pasta_arquivos)
 
-    assert existe_pasta_de_arquivos(caminho_pasta_arquivos)
     assert existe_arquivo_para_o_dia(hoje, caminho_pasta_arquivos)
 
     caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(hoje, caminho_pasta_arquivos)
