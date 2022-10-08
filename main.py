@@ -4,7 +4,7 @@ import pprint
 from datetime import date
 from typing import Optional, Sequence
 
-CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.todo_app_cli"
+CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.tac"
 
 
 def obter_caminho_arquivo_do_dia(dia: date, caminho_pasta_arquivos: str) -> str:
