@@ -78,3 +78,30 @@ def test_comando_desfazer_atividade(tmp_path):
     with open(caminho_para_arquivo_do_dia, "r") as arquivo:
         linhas = arquivo.readlines()
         assert "pendente" in linhas[0]
+
+
+def test_comando_listar_atividades(tmp_path, capsys):
+    caminho_pasta_arquivos = tmp_path
+
+    argumentos = argparse.Namespace(comando="listar")
+    executa_comando(argumentos, caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "Não existe nenhuma tarefa nesse dia!" in resultado.out
+
+    argumentos = argparse.Namespace(comando="adicionar", descricao="tarefa exemplo")
+    executa_comando(argumentos, caminho_pasta_arquivos)
+
+    argumentos = argparse.Namespace(comando="listar")
+    executa_comando(argumentos, caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "tarefa exemplo" in resultado.out
+    assert "[ ]" in resultado.out
+    assert "0" in resultado.out
+
+    argumentos = argparse.Namespace(comando="concluir", indice=0)
+    executa_comando(argumentos, caminho_pasta_arquivos)
+
+    argumentos = argparse.Namespace(comando="listar")
+    executa_comando(argumentos, caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "[v]" in resultado.out
