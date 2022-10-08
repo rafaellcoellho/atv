@@ -114,7 +114,7 @@ def comando_desfazer(indice: int) -> int:
     return 0
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def formatar_entrada_linha_de_comando(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser_principal = argparse.ArgumentParser(prog="tac")
 
     subparsers = parser_principal.add_subparsers(dest="comando", required=True)
@@ -148,22 +148,28 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     )
     parser_comando_desfazer .add_argument("indice", help="indice da tarefa a ser selecionada como pendente")
 
-    args = parser_principal.parse_args(argv)
+    return parser_principal.parse_args(argv)
 
-    pprint.pprint(vars(args))
 
-    if args.comando == "adicionar":
-        return comando_adicionar(args.descricao)
-    if args.comando == "listar":
+def executa_comando(argumentos: argparse.Namespace) -> int:
+    if argumentos.comando == "adicionar":
+        return comando_adicionar(argumentos.descricao)
+    if argumentos.comando == "listar":
         return comando_listar()
-    if args.comando == "remover":
-        return comando_remover(args.indice)
-    if args.comando == "concluir":
-        return comando_concluir(args.indice)
-    if args.comando == "desfazer":
-        return comando_desfazer(args.indice)
+    if argumentos.comando == "remover":
+        return comando_remover(argumentos.indice)
+    if argumentos.comando == "concluir":
+        return comando_concluir(argumentos.indice)
+    if argumentos.comando == "desfazer":
+        return comando_desfazer(argumentos.indice)
     else:
-        raise NotImplementedError(f"Comando {args.comando} não implementado")
+        raise NotImplementedError(f"Comando {argumentos.comando} não implementado")
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    argumentos = formatar_entrada_linha_de_comando(argv)
+    pprint.pprint(vars(argumentos))
+    return executa_comando(argumentos=argumentos)
 
 
 if __name__ == '__main__':
