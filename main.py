@@ -104,6 +104,15 @@ def comando_concluir(indice: int) -> int:
     return 0
 
 
+def comando_desfazer(indice: int) -> int:
+    if not existe_arquivo_para_o_dia(date.today()):
+        print("Não existe nenhuma tarefa nesse dia!")
+    else:
+        print("não implementado")
+
+    return 0
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser_principal = argparse.ArgumentParser(prog="tac")
 
@@ -132,6 +141,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     )
     parser_comando_concluir .add_argument("indice", help="indice da tarefa a ser deletada")
 
+    parser_comando_desfazer = subparsers.add_parser(
+        "desfazer",
+        help="marcar uma atividade do dia atual como pendente"
+    )
+    parser_comando_desfazer .add_argument("indice", help="indice da tarefa a ser selecionada como pendente")
+
     args = parser_principal.parse_args(argv)
 
     pprint.pprint(vars(args))
@@ -144,6 +159,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return comando_remover(args.indice)
     if args.comando == "concluir":
         return comando_concluir(args.indice)
+    if args.comando == "desfazer":
+        return comando_desfazer(args.indice)
     else:
         raise NotImplementedError(f"Comando {args.comando} não implementado")
 
