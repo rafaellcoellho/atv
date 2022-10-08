@@ -108,7 +108,8 @@ def comando_desfazer(indice: int) -> int:
     if not existe_arquivo_para_o_dia(date.today()):
         print("Não existe nenhuma tarefa nesse dia!")
     else:
-        print("não implementado")
+        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(date.today())
+        mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "pendente")
 
     return 0
 
