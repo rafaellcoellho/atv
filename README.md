@@ -1,26 +1,26 @@
-# Todo App Cli
+# tac
 
 Aplicativo de linha comando para registrar atividades diárias.
 
-## Roadmap versão 1.0
+## Como usar
 
-- [ ] `tac adicionar <descrição>`: Adicionar uma nova atividade no dia atual
+- [x] `tac adicionar <descrição>`: Adicionar uma nova atividade no dia atual
 com a descrição informada;
-- [ ] `tac remover <indice>`: Remover uma atividade no dia atual, representada
+- [x] `tac remover <indice>`: Remover uma atividade no dia atual, representada
 pelo indice informado;
-- [ ] `tac listar` ou `tac`: Mostrar todas as atividades no dia atual;
-- [ ] `tac concluir <indice>`: Marcar uma atividade no dia atual como concluída, selecionada
+- [x] `tac listar` ou `tac`: Mostrar todas as atividades no dia atual;
+- [x] `tac concluir <indice>`: Marcar uma atividade no dia atual como concluída, selecionada
 pelo indice informado;
-- [ ] `tac desfazer <indice>: Marcar uma atividade no dia atual como pendente, selecionada
+- [x] `tac desfazer <indice>: Marcar uma atividade no dia atual como pendente, selecionada
 pelo indice informado;
-- [ ] `tac --help`: Mostrar todos os comandos disponíveis.
+- [x] `tac --help`: Mostrar todos os comandos disponíveis.
 
 Observações:
 
-- [ ] Atividades são salvas como txt na pasta `/home/usuario_atual/.tac`;
-- [ ] Todo dia um novo arquivo é criado.
+- [x] Atividades são salvas como txt na pasta `/home/usuario_atual/.tac`;
+- [x] Todo dia um novo arquivo é criado.
 
-## Roadmap versão futura
+## Pendente
 
 - [ ] `tac migrar <data>`: migrar todas as atividades não realizadas na data especificada
 para o arquivo de hoje.
