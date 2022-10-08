@@ -20,6 +20,14 @@ Observações:
 - [x] Atividades são salvas como txt na pasta `/home/usuario_atual/.tac`;
 - [x] Todo dia um novo arquivo é criado.
 
+## Como rodar testes localmente
+
+```commandline
+virtualenv venv
+pip install -r requirements-dev.txt
+pytest
+```
+
 ## Pendente
 
 - [ ] `tac migrar <data>`: migrar todas as atividades não realizadas na data especificada
