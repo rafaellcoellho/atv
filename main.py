@@ -168,7 +168,6 @@ def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str)
 
 def main(argv: Optional[Sequence[str]] = None, caminho_pasta_arquivos: str = CAMINHO_PASTA_ARQUIVOS) -> int:
     argumentos = formatar_entrada_linha_de_comando(argv)
-    pprint.pprint(vars(argumentos))
     return executa_comando(argumentos=argumentos, caminho_pasta_arquivos=caminho_pasta_arquivos)
 
 
