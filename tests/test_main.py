@@ -1,7 +1,12 @@
 import argparse
 from datetime import date
 
-from tac.main import main, executa_comando, existe_arquivo_para_o_dia, obter_caminho_arquivo_do_dia
+from tac.main import (
+    main,
+    executa_comando,
+    existe_arquivo_para_o_dia,
+    obter_caminho_arquivo_do_dia,
+)
 
 
 def test_comando_adicionar_atividade(tmp_path):
@@ -13,7 +18,9 @@ def test_comando_adicionar_atividade(tmp_path):
 
     assert existe_arquivo_para_o_dia(hoje, caminho_pasta_arquivos)
 
-    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(hoje, caminho_pasta_arquivos)
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        hoje, caminho_pasta_arquivos
+    )
     with open(caminho_para_arquivo_do_dia, "r") as arquivo:
         linhas = arquivo.readlines()
         assert len(linhas) == 1
@@ -26,7 +33,9 @@ def test_comando_remover_atividade(tmp_path):
 
     main(["adicionar", "tarefa exemplo"], caminho_pasta_arquivos)
 
-    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(hoje, caminho_pasta_arquivos)
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        hoje, caminho_pasta_arquivos
+    )
     with open(caminho_para_arquivo_do_dia, "r") as arquivo:
         linhas = arquivo.readlines()
         assert len(linhas) == 1
@@ -44,7 +53,9 @@ def test_comando_concluir_atividade(tmp_path):
 
     main(["adicionar", "tarefa exemplo"], caminho_pasta_arquivos)
 
-    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(hoje, caminho_pasta_arquivos)
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        hoje, caminho_pasta_arquivos
+    )
     with open(caminho_para_arquivo_do_dia, "r") as arquivo:
         linhas = arquivo.readlines()
         assert len(linhas) == 1
@@ -65,7 +76,9 @@ def test_comando_desfazer_atividade(tmp_path):
 
     main(["adicionar", "tarefa exemplo"], caminho_pasta_arquivos)
 
-    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(hoje, caminho_pasta_arquivos)
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        hoje, caminho_pasta_arquivos
+    )
     with open(caminho_para_arquivo_do_dia, "r") as arquivo:
         linhas = arquivo.readlines()
         assert len(linhas) == 1
