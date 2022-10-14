@@ -4,26 +4,29 @@ Aplicativo de linha comando para registrar atividades diárias.
 
 ## Como usar
 
-- [x] `tac adicionar <descrição>`: Adicionar uma nova atividade no dia atual
+- `tac adicionar <descrição>`: Adicionar uma nova atividade no dia atual
 com a descrição informada;
-- [x] `tac remover <indice>`: Remover uma atividade no dia atual, representada
+- `tac remover <indice>`: Remover uma atividade no dia atual, representada
 pelo indice informado;
-- [x] `tac listar` ou `tac`: Mostrar todas as atividades no dia atual;
-- [x] `tac concluir <indice>`: Marcar uma atividade no dia atual como concluída, selecionada
+- `tac listar` ou `tac`: Mostrar todas as atividades no dia atual;
+- `tac concluir <indice>`: Marcar uma atividade no dia atual como concluída, selecionada
 pelo indice informado;
-- [x] `tac desfazer <indice>`: Marcar uma atividade no dia atual como pendente, selecionada
+- `tac desfazer <indice>`: Marcar uma atividade no dia atual como pendente, selecionada
 pelo indice informado;
-- [x] `tac --help`: Mostrar todos os comandos disponíveis.
+- `tac --help`: Mostrar todos os comandos disponíveis.
 
 Observações:
 
-- [x] Atividades são salvas como txt na pasta `/home/usuario_atual/.tac`;
-- [x] Todo dia um novo arquivo é criado.
+- Atividades são salvas como txt na pasta `/home/usuario_atual/.tac`;
+- Todo dia um novo arquivo é criado.
 
-## Como rodar testes localmente
+## Desenvolvimento
+
+### Como rodar testes localmente
 
 ```commandline
 virtualenv venv
+source venv/bin/activate
 pip install -r requirements-dev.txt
 pytest
 ```
