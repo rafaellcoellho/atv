@@ -10,7 +10,7 @@ from atv.main import (
 
 def test_comando_adicionar_atividade(tmp_path):
     hoje = date.today()
-    caminho_pasta_arquivos = tmp_path
+    caminho_pasta_arquivos = str(tmp_path)
 
     codigo_de_erro = main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
     assert codigo_de_erro == 0
@@ -28,7 +28,7 @@ def test_comando_adicionar_atividade(tmp_path):
 
 def test_comando_remover_atividade(tmp_path):
     hoje = date.today()
-    caminho_pasta_arquivos = tmp_path
+    caminho_pasta_arquivos = str(tmp_path)
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
 
@@ -48,7 +48,7 @@ def test_comando_remover_atividade(tmp_path):
 
 def test_comando_concluir_atividade(tmp_path):
     hoje = date.today()
-    caminho_pasta_arquivos = tmp_path
+    caminho_pasta_arquivos = str(tmp_path)
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
 
@@ -68,7 +68,7 @@ def test_comando_concluir_atividade(tmp_path):
 
 def test_comando_desfazer_atividade(tmp_path):
     hoje = date.today()
-    caminho_pasta_arquivos = tmp_path
+    caminho_pasta_arquivos = str(tmp_path)
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
 
@@ -87,7 +87,7 @@ def test_comando_desfazer_atividade(tmp_path):
 
 
 def test_comando_listar_atividades(tmp_path, capsys):
-    caminho_pasta_arquivos = tmp_path
+    caminho_pasta_arquivos = str(tmp_path)
 
     main(["l"], caminho_pasta_arquivos)
     resultado = capsys.readouterr()
