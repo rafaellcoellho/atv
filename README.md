@@ -1,23 +1,23 @@
-# tac
+# atv
 
 Aplicativo de linha comando para registrar atividades diárias.
 
 ## Como usar
 
-- `tac adicionar <descrição>`: Adicionar uma nova atividade no dia atual
+- `atv a <descrição>`: Adicionar uma nova atividade no dia atual
 com a descrição informada;
-- `tac remover <indice>`: Remover uma atividade no dia atual, representada
+- `atv r <indice>`: Remover uma atividade no dia atual, representada
 pelo indice informado;
-- `tac listar` ou `tac`: Mostrar todas as atividades no dia atual;
-- `tac concluir <indice>`: Marcar uma atividade no dia atual como concluída, selecionada
+- `atv l` ou `atv`: Mostrar todas as atividades no dia atual;
+- `atv c <indice>`: Marcar uma atividade no dia atual como concluída, selecionada
 pelo indice informado;
-- `tac desfazer <indice>`: Marcar uma atividade no dia atual como pendente, selecionada
+- `atv d <indice>`: Marcar uma atividade no dia atual como pendente, selecionada
 pelo indice informado;
-- `tac --help`: Mostrar todos os comandos disponíveis.
+- `atv --help`: Mostrar todos os comandos disponíveis.
 
 Observações:
 
-- Atividades são salvas como txt na pasta `/home/usuario_atual/.tac`;
+- Atividades são salvas como txt na pasta `/home/usuario_atual/.atv`;
 - Todo dia um novo arquivo é criado.
 
 ## Desenvolvimento
@@ -33,5 +33,5 @@ pytest
 
 ## Pendente
 
-- [ ] `tac migrar <data>`: migrar todas as atividades não realizadas na data especificada
+- [ ] `atv m <data>`: migrar todas as atividades não realizadas na data especificada
 para o arquivo de hoje.
