@@ -1,9 +1,8 @@
 import argparse
 from datetime import date
 
-from tac.main import (
+from atv.main import (
     main,
-    executa_comando,
     existe_arquivo_para_o_dia,
     obter_caminho_arquivo_do_dia,
 )
@@ -60,9 +59,6 @@ def test_comando_concluir_atividade(tmp_path):
         linhas = arquivo.readlines()
         assert len(linhas) == 1
 
-    argumentos = argparse.Namespace(comando="c", indice=0)
-    executa_comando(argumentos, caminho_pasta_arquivos)
-
     main(["c", "0"], caminho_pasta_arquivos)
 
     with open(caminho_para_arquivo_do_dia, "r") as arquivo:
@@ -104,9 +100,6 @@ def test_comando_listar_atividades(tmp_path, capsys):
     assert "tarefa exemplo" in resultado.out
     assert "[ ]" in resultado.out
     assert "0" in resultado.out
-
-    argumentos = argparse.Namespace(comando="c", indice=0)
-    executa_comando(argumentos, caminho_pasta_arquivos)
 
     main(["c", "0"], caminho_pasta_arquivos)
     main(["l"], caminho_pasta_arquivos)
