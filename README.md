@@ -31,6 +31,15 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
+#### Como instalar
+
+```commandline
+source venv/bin/activate
+pip install build
+python -m build
+pip install dist/atv-0.0.0.whl
+```
+
 ## Pendente
 
 - [ ] `atv m <data>`: migrar todas as atividades não realizadas na data especificada
