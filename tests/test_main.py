@@ -105,3 +105,19 @@ def test_comando_listar_atividades(tmp_path, capsys):
     main(["l"], caminho_pasta_arquivos)
     resultado = capsys.readouterr()
     assert "[v]" in resultado.out
+
+
+def test_listar_sem_usar_comando(tmp_path, capsys):
+    caminho_pasta_arquivos = str(tmp_path)
+
+    main([], caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "Não existe nenhuma tarefa nesse dia!" in resultado.out
+
+    main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
+
+    main([], caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "tarefa exemplo" in resultado.out
+    assert "[ ]" in resultado.out
+    assert "0" in resultado.out
