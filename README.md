@@ -22,18 +22,29 @@ Observações:
 
 ## Desenvolvimento
 
-#### Como rodar testes localmente
+#### Como rodar testes
 
-```commandline
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements-dev.txt
-pytest
+Instalar tox globalmente se não tiver instalado:
+
+```
+pip install tox
+```
+
+Rodar todos os ambientes de testes que tiver na sua máquina:
+
+```
+tox --skip-missing-interpreters
+```
+
+Rodar ambiente de teste especifico e teste especifico:
+
+```
+tox -e py310 -- tests/test_main.py::test_comando_adicionar_atividade
 ```
 
 #### Como instalar
 
-```commandline
+```
 source venv/bin/activate
 pip install build
 python -m build
