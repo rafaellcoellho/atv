@@ -44,11 +44,22 @@ tox -e py310 -- tests/test_main.py::test_comando_adicionar_atividade
 
 #### Como instalar
 
+Instalar ferramenta de build usando pip:
+
 ```
-source venv/bin/activate
 pip install build
+```
+
+Construir os pacotes usando build:
+
+```
 python -m build
-pip install dist/atv-0.0.0.whl
+```
+
+Instalar o pacote usando pip:
+
+```
+pip install dist/atv/atv-0.0.0.whl
 ```
 
 ## Pendente
