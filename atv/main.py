@@ -130,7 +130,7 @@ def formatar_entrada_linha_de_comando(
 ) -> argparse.Namespace:
     parser_principal = argparse.ArgumentParser(prog="atv")
 
-    subparsers = parser_principal.add_subparsers(dest="comando", required=True)
+    subparsers = parser_principal.add_subparsers(dest="comando")
 
     parser_comando_adicionar = subparsers.add_parser(
         "a", help="adicionar uma nova atividade no dia atual"
@@ -166,6 +166,8 @@ def formatar_entrada_linha_de_comando(
 
 
 def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str) -> int:
+    if argumentos.comando is None:
+        return comando_listar(caminho_pasta_arquivos)
     if argumentos.comando == "a":
         return comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
     if argumentos.comando == "l":
