@@ -20,24 +20,21 @@ def test_comando_adicionar_atividade(tmp_path, capsys):
     assert "[ ]" in resultado.out
 
 
-def test_comando_remover_atividade(tmp_path):
+def test_comando_remover_atividade(tmp_path, capsys):
     hoje = date.today()
     caminho_pasta_arquivos = str(tmp_path)
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
 
-    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-        hoje, caminho_pasta_arquivos
-    )
-    with open(caminho_para_arquivo_do_dia, "r") as arquivo:
-        linhas = arquivo.readlines()
-        assert len(linhas) == 1
+    main(["l"], caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "tarefa exemplo" in resultado.out
 
     main(["r", "0"], caminho_pasta_arquivos)
 
-    with open(caminho_para_arquivo_do_dia, "r") as arquivo:
-        linhas = arquivo.readlines()
-        assert len(linhas) == 0
+    main(["l"], caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "tarefa exemplo" not in resultado.out
 
 
 def test_comando_concluir_atividade(tmp_path):
