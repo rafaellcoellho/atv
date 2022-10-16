@@ -55,24 +55,23 @@ def test_comando_concluir_atividade(tmp_path, capsys):
     assert "[v]" in resultado.out
 
 
-def test_comando_desfazer_atividade(tmp_path):
-    hoje = date.today()
+def test_comando_desfazer_atividade(tmp_path, capsys):
     caminho_pasta_arquivos = str(tmp_path)
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
+    main(["c", "0"], caminho_pasta_arquivos)
 
-    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-        hoje, caminho_pasta_arquivos
-    )
-    with open(caminho_para_arquivo_do_dia, "r") as arquivo:
-        linhas = arquivo.readlines()
-        assert len(linhas) == 1
+    main(["l"], caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "tarefa exemplo" in resultado.out
+    assert "[v]" in resultado.out
 
     main(["d", "0"], caminho_pasta_arquivos)
 
-    with open(caminho_para_arquivo_do_dia, "r") as arquivo:
-        linhas = arquivo.readlines()
-        assert "pendente" in linhas[0]
+    main(["l"], caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert "tarefa exemplo" in resultado.out
+    assert "[ ]" in resultado.out
 
 
 def test_comando_listar_atividades(tmp_path, capsys):
