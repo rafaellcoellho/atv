@@ -2,8 +2,13 @@ import argparse
 import os
 from datetime import date
 from typing import Optional, Sequence
+from enum import Enum
 
 CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
+
+
+class Mensagens(Enum):
+    NENHUMA_ATIVIDADE = "Não existe nenhuma tarefa nesse dia!"
 
 
 def obter_caminho_arquivo_do_dia(dia: date, caminho_pasta_arquivos: str) -> str:
@@ -74,17 +79,22 @@ def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str) -> int:
 
 def comando_listar(caminho_pasta_arquivos: str) -> int:
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        linhas = ler_arquivo_de_tarefas(caminho_para_arquivo_do_dia)
+        print(Mensagens.NENHUMA_ATIVIDADE.value)
+        return 0
 
-        for indice, linha in enumerate(linhas):
-            descricao, situacao = linha.split("|")
-            simbolo_situacao = "v" if "concluida" in situacao else " "
-            print(f"{indice}. [{simbolo_situacao}] - {descricao}")
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    linhas = ler_arquivo_de_tarefas(caminho_para_arquivo_do_dia)
+
+    if len(linhas) == 0:
+        print(Mensagens.NENHUMA_ATIVIDADE.value)
+        return 0
+
+    for indice, linha in enumerate(linhas):
+        descricao, situacao = linha.split("|")
+        simbolo_situacao = "v" if "concluida" in situacao else " "
+        print(f"{indice}. [{simbolo_situacao}] - {descricao}")
 
     return 0
 
