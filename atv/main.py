@@ -9,6 +9,7 @@ CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
 
 class Mensagens(Enum):
     NENHUMA_ATIVIDADE = "Não existe nenhuma tarefa nesse dia!"
+    SUCESSO_ADICIONA_ATIVIDADE = "Atividade adicionada com sucesso!"
 
 
 def obter_caminho_arquivo_do_dia(dia: date, caminho_pasta_arquivos: str) -> str:
@@ -73,6 +74,8 @@ def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str) -> int:
         date.today(), caminho_pasta_arquivo
     )
     escrever_tarefa_no_arquivo(descricao_tarefa, caminho_para_arquivo_dia_atual)
+
+    print(Mensagens.SUCESSO_ADICIONA_ATIVIDADE.value)
 
     return 0
 
@@ -179,7 +182,11 @@ def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str)
     if argumentos.comando is None:
         return comando_listar(caminho_pasta_arquivos)
     if argumentos.comando == "a":
-        return comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
+        codigo_de_erro = comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
+        if codigo_de_erro > 0:
+            return codigo_de_erro
+        codigo_de_erro = comando_listar(caminho_pasta_arquivos)
+        return codigo_de_erro
     if argumentos.comando == "l":
         return comando_listar(caminho_pasta_arquivos)
     if argumentos.comando == "r":

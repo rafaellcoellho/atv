@@ -1,17 +1,16 @@
 import argparse
 from datetime import date
 
-from atv.main import main
+from atv.main import main, Mensagens
 
 
 def test_comando_adicionar_atividade(tmp_path, capsys):
     caminho_pasta_arquivos = str(tmp_path)
 
     codigo_de_erro = main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
-    assert codigo_de_erro == 0
-
-    main(["l"], caminho_pasta_arquivos)
     resultado = capsys.readouterr()
+    assert codigo_de_erro == 0
+    assert str(Mensagens.SUCESSO_ADICIONA_ATIVIDADE.value) in resultado.out
     assert "tarefa exemplo" in resultado.out
     assert "[ ]" in resultado.out
 
@@ -99,8 +98,6 @@ def test_listar_sem_usar_comando(tmp_path, capsys):
 
 
 def test_comando_listar_sem_atividades(tmp_path, capsys):
-    from atv.main import Mensagens
-
     caminho_pasta_arquivos = str(tmp_path)
 
     main(["l"], caminho_pasta_arquivos)
