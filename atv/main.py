@@ -11,6 +11,7 @@ class Mensagens(Enum):
     NENHUMA_ATIVIDADE = "Não existe nenhuma tarefa nesse dia!"
     SUCESSO_ADICIONA_ATIVIDADE = "Atividade adicionada com sucesso!"
     SUCESSO_REMOVER_ATIVIDADE = "Atividade removida com sucesso!"
+    SUCESSO_CONCLUIR_ATIVIDADE = "Atividade marcada como concluida!"
 
 
 def obter_caminho_arquivo_do_dia(dia: date, caminho_pasta_arquivos: str) -> str:
@@ -65,12 +66,26 @@ def mudar_status_de_atividade(caminho_para_arquivo: str, indice: int, status: st
         arquivo.seek(0)
         arquivo.truncate()
 
+        if not eh_possivel_acessar_linha(linhas, int(indice)):
+            return
+
         for indice_do_arquivo, linha in enumerate(linhas):
             if indice_do_arquivo == int(indice):
                 descricao, _ = linha.split("|")
                 arquivo.write(f"{descricao} | {status}\n")
             else:
                 arquivo.write(linha)
+
+
+def eh_possivel_acessar_linha(linhas: list, indice: int) -> bool:
+    nao_existe_linhas_no_arquivo = len(linhas) == 0
+    indice_nao_existe_no_arquivo = indice + 1 > len(linhas)
+
+    if nao_existe_linhas_no_arquivo or indice_nao_existe_no_arquivo:
+        print(Mensagens.NENHUMA_ATIVIDADE.value)
+        return False
+
+    return True
 
 
 def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str) -> int:
@@ -126,12 +141,15 @@ def comando_remover(indice: int, caminho_pasta_arquivos: str) -> int:
 
 def comando_concluir(indice: int, caminho_pasta_arquivos: str) -> int:
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "concluida")
+        print(Mensagens.NENHUMA_ATIVIDADE.value)
+        return 0
+
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "concluida")
+
+    print(Mensagens.SUCESSO_CONCLUIR_ATIVIDADE.value)
 
     return 0
 
@@ -202,7 +220,11 @@ def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str)
     if argumentos.comando == "r":
         return comando_remover(argumentos.indice, caminho_pasta_arquivos)
     if argumentos.comando == "c":
-        return comando_concluir(argumentos.indice, caminho_pasta_arquivos)
+        codigo_de_erro = comando_concluir(argumentos.indice, caminho_pasta_arquivos)
+        if codigo_de_erro > 0:
+            return codigo_de_erro
+        codigo_de_erro = comando_listar(caminho_pasta_arquivos)
+        return codigo_de_erro
     if argumentos.comando == "d":
         return comando_desfazer(argumentos.indice, caminho_pasta_arquivos)
     else:
