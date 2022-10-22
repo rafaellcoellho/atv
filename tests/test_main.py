@@ -6,8 +6,7 @@ from atv.main import main
 def test_comando_adicionar_atividade(tmp_path, capsys):
     caminho_pasta_arquivos = str(tmp_path)
 
-    codigo_de_erro = main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
-    assert codigo_de_erro == 0
+    main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
 
     main(["l"], caminho_pasta_arquivos)
     resultado = capsys.readouterr()
