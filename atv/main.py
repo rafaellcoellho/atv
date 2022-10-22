@@ -49,10 +49,7 @@ def remover_linha_do_arquivo(caminho_para_arquivo: str, indice: int):
         arquivo.seek(0)
         arquivo.truncate()
 
-        nao_existe_linhas_no_arquivo = len(linhas) == 0
-        indice_nao_existe_no_arquivo = int(indice) + 1 > len(linhas)
-        if nao_existe_linhas_no_arquivo or indice_nao_existe_no_arquivo:
-            print(Mensagens.NENHUMA_ATIVIDADE.value)
+        if not eh_possivel_acessar_linha(linhas, int(indice)):
             return
 
         for indice_do_arquivo, linha in enumerate(linhas):
