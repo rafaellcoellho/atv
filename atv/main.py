@@ -10,6 +10,7 @@ CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
 class Mensagens(Enum):
     NENHUMA_ATIVIDADE = "Não existe nenhuma tarefa nesse dia!"
     SUCESSO_ADICIONA_ATIVIDADE = "Atividade adicionada com sucesso!"
+    SUCESSO_REMOVER_ATIVIDADE = "Atividade removida com sucesso!"
 
 
 def obter_caminho_arquivo_do_dia(dia: date, caminho_pasta_arquivos: str) -> str:
@@ -46,6 +47,12 @@ def remover_linha_do_arquivo(caminho_para_arquivo: str, indice: int):
         linhas = arquivo.readlines()
         arquivo.seek(0)
         arquivo.truncate()
+
+        nao_existe_linhas_no_arquivo = len(linhas) == 0
+        indice_nao_existe_no_arquivo = int(indice) + 1 > len(linhas)
+        if nao_existe_linhas_no_arquivo or indice_nao_existe_no_arquivo:
+            print(Mensagens.NENHUMA_ATIVIDADE.value)
+            return
 
         for indice_do_arquivo, linha in enumerate(linhas):
             if indice_do_arquivo != int(indice):
@@ -104,12 +111,15 @@ def comando_listar(caminho_pasta_arquivos: str) -> int:
 
 def comando_remover(indice: int, caminho_pasta_arquivos: str) -> int:
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        remover_linha_do_arquivo(caminho_para_arquivo_do_dia, indice)
+        print(Mensagens.NENHUMA_ATIVIDADE.value)
+        return 0
+
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    remover_linha_do_arquivo(caminho_para_arquivo_do_dia, indice)
+
+    print(Mensagens.SUCESSO_REMOVER_ATIVIDADE.value)
 
     return 0
 

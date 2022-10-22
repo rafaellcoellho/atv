@@ -16,20 +16,28 @@ def test_comando_adicionar_atividade(tmp_path, capsys):
 
 
 def test_comando_remover_atividade(tmp_path, capsys):
-    hoje = date.today()
     caminho_pasta_arquivos = str(tmp_path)
+
+    main(["r", "0"], caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert str(Mensagens.NENHUMA_ATIVIDADE.value) in resultado.out
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
 
-    main(["l"], caminho_pasta_arquivos)
+    # tenta remover uma atividade que não existe mesmo já existindo atividade
+    main(["r", "1"], caminho_pasta_arquivos)
     resultado = capsys.readouterr()
-    assert "tarefa exemplo" in resultado.out
+    assert str(Mensagens.NENHUMA_ATIVIDADE.value) in resultado.out
 
     main(["r", "0"], caminho_pasta_arquivos)
-
-    main(["l"], caminho_pasta_arquivos)
     resultado = capsys.readouterr()
+    assert str(Mensagens.SUCESSO_REMOVER_ATIVIDADE.value) in resultado.out
     assert "tarefa exemplo" not in resultado.out
+
+    # remove novamente quando não tem mais nenhuma atividade
+    main(["r", "0"], caminho_pasta_arquivos)
+    resultado = capsys.readouterr()
+    assert str(Mensagens.SUCESSO_REMOVER_ATIVIDADE.value) in resultado.out
 
 
 def test_comando_concluir_atividade(tmp_path, capsys):
