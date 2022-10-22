@@ -1,11 +1,6 @@
-import argparse
 from datetime import date
 
-from atv.main import (
-    main,
-    existe_arquivo_para_o_dia,
-    obter_caminho_arquivo_do_dia,
-)
+from atv.main import main
 
 
 def test_comando_adicionar_atividade(tmp_path, capsys):
