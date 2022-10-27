@@ -1,10 +1,32 @@
 import argparse
 import os
 import sys
+from dataclasses import dataclass
 from datetime import date
-from typing import Optional, Sequence
+from enum import Enum
+from typing import Sequence
+
 
 CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
+
+
+class Mensagens(Enum):
+    ERRO_DESCRICAO_NAO_PODE_SER_VAZIA = (
+        "Atividade não adicionada, descrição não pode ser vazia."
+    )
+
+
+class Erro(Exception):
+    def __init__(self, mensagem: str):
+        self.mensagem = mensagem
+
+    def __str__(self):
+        return self.mensagem
+
+
+@dataclass
+class DescricaoVazia(Erro):
+    mensagem: str = Mensagens.ERRO_DESCRICAO_NAO_PODE_SER_VAZIA.value
 
 
 def obter_caminho_arquivo_do_dia(dia: date, caminho_pasta_arquivos: str) -> str:
@@ -64,6 +86,10 @@ def mudar_status_de_atividade(caminho_para_arquivo: str, indice: int, status: st
 def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str) -> int:
     if not existe_pasta_de_arquivos(caminho_pasta_arquivo):
         os.makedirs(CAMINHO_PASTA_ARQUIVOS)
+
+    descricao_eh_vazia = not descricao_tarefa.strip()
+    if descricao_eh_vazia:
+        raise DescricaoVazia
 
     caminho_para_arquivo_dia_atual = obter_caminho_arquivo_do_dia(
         date.today(), caminho_pasta_arquivo
@@ -189,12 +215,17 @@ def main(
         argumentos = ["l"]
     argumentos_formatados = parser_principal.parse_args(argumentos)
 
-    executa_comando(
-        argumentos=argumentos_formatados, caminho_pasta_arquivos=caminho_pasta_arquivos
-    )
-
-    return 0
+    try:
+        executa_comando(
+            argumentos=argumentos_formatados,
+            caminho_pasta_arquivos=caminho_pasta_arquivos,
+        )
+    except Erro as erro:
+        print(erro.mensagem)
+        return 1
+    else:
+        return 0
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())
