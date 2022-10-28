@@ -1,4 +1,5 @@
-from atv.main import main, Mensagens
+from atv.main import main
+from atv.mensagens import Mensagens
 
 
 def limpar_stdout(capsys):

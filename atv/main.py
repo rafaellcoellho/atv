@@ -1,32 +1,12 @@
 import argparse
 import os
 import sys
-from dataclasses import dataclass
 from datetime import date
-from enum import Enum
 from typing import Sequence
 
+from atv.erros import DescricaoVazia, Erro
 
 CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
-
-
-class Mensagens(Enum):
-    ERRO_DESCRICAO_NAO_PODE_SER_VAZIA = (
-        "Atividade não adicionada, descrição não pode ser vazia."
-    )
-
-
-class Erro(Exception):
-    def __init__(self, mensagem: str):
-        self.mensagem = mensagem
-
-    def __str__(self):
-        return self.mensagem
-
-
-@dataclass
-class DescricaoVazia(Erro):
-    mensagem: str = Mensagens.ERRO_DESCRICAO_NAO_PODE_SER_VAZIA.value
 
 
 def obter_caminho_arquivo_do_dia(dia: date, caminho_pasta_arquivos: str) -> str:
