@@ -1,5 +1,3 @@
-from datetime import date
-
 from atv.main import main, Mensagens
 
 
@@ -45,7 +43,6 @@ def test_comando_adicionar_atividade(tmp_path, capsys):
 
 
 def test_comando_remover_atividade(tmp_path, capsys):
-    hoje = date.today()
     caminho_pasta_arquivos = str(tmp_path)
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
