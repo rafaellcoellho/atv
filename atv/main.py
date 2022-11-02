@@ -5,6 +5,7 @@ from datetime import date
 from typing import Sequence
 
 from atv.erros import DescricaoVazia, Erro, ComandoNaoImplementado
+from atv.mensagens import Mensagens
 
 CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
 
@@ -76,6 +77,8 @@ def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str):
     )
     escrever_tarefa_no_arquivo(descricao_tarefa, caminho_para_arquivo_dia_atual)
 
+    print(Mensagens.SUCESSO_ADICIONAR_ATIVIDADE.value)
+
 
 def comando_listar(caminho_pasta_arquivos: str):
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
@@ -125,6 +128,7 @@ def comando_desfazer(indice: int, caminho_pasta_arquivos: str):
 def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str) -> int:
     if argumentos.comando == "a":
         comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "l":
         comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "r":

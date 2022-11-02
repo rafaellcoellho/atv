@@ -17,24 +17,24 @@ def test_comando_adicionar_atividade(tmp_path, capsys):
 
     # adiciona o primeiro item
     main(["a", "tarefa 1"], caminho_pasta_arquivos)
-    main(["l"], caminho_pasta_arquivos)
     stdout = capsys.readouterr().out
     linhas = obter_linhas_do_stdout(stdout)
-    assert len(linhas) == 1
-    assert "tarefa 1" in linhas[0]
-    assert "[ ]" in linhas[0]
+    assert len(linhas) == 2
+    assert Mensagens.SUCESSO_ADICIONAR_ATIVIDADE.value == linhas[0]
+    assert "tarefa 1" in linhas[1]
+    assert "[ ]" in linhas[1]
 
     limpar_stdout(capsys)
     # adiciona o segundo item
     main(["a", "tarefa 2"], caminho_pasta_arquivos)
-    main(["l"], caminho_pasta_arquivos)
     stdout = capsys.readouterr().out
     linhas = obter_linhas_do_stdout(stdout)
-    assert len(linhas) == 2
-    assert "tarefa 1" in linhas[0]
-    assert "[ ]" in linhas[0]
-    assert "tarefa 2" in linhas[1]
+    assert len(linhas) == 3
+    assert Mensagens.SUCESSO_ADICIONAR_ATIVIDADE.value == linhas[0]
+    assert "tarefa 1" in linhas[1]
     assert "[ ]" in linhas[1]
+    assert "tarefa 2" in linhas[2]
+    assert "[ ]" in linhas[2]
 
     limpar_stdout(capsys)
     # não permite adicionar descrição vazia

@@ -6,3 +6,4 @@ class Mensagens(Enum):
         "Atividade não adicionada, descrição não pode ser vazia."
     )
     ERRO_COMANDO_NAO_IMPLEMENTADO = "Comando não foi implementado."
+    SUCESSO_ADICIONAR_ATIVIDADE = "Atividade foi adiciona com sucesso."
