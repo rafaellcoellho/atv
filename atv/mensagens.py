@@ -6,4 +6,8 @@ class Mensagens(Enum):
         "Atividade não adicionada, descrição não pode ser vazia."
     )
     ERRO_COMANDO_NAO_IMPLEMENTADO = "Comando não foi implementado."
+    ERRO_REMOVER_ATIVIDADE_INEXISTENTE = (
+        "A atividade nesse indice não existe para ser removida"
+    )
     SUCESSO_ADICIONAR_ATIVIDADE = "Atividade foi adiciona com sucesso."
+    SUCESSO_REMOVER_ATIVIDADE = "Atividade foi removida com sucesso"

@@ -22,3 +22,9 @@ class DescricaoVazia(Erro):
 class ComandoNaoImplementado(Erro):
     mensagem: str = Mensagens.ERRO_COMANDO_NAO_IMPLEMENTADO.value
     codigo_de_status: int = 1
+
+
+@dataclass
+class RemoverAtividadeInexistente(Erro):
+    mensagem: str = Mensagens.ERRO_REMOVER_ATIVIDADE_INEXISTENTE.value
+    codigo_de_status: int = 1

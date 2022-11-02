@@ -46,17 +46,40 @@ def test_comando_adicionar_atividade(tmp_path, capsys):
 def test_comando_remover_atividade(tmp_path, capsys):
     caminho_pasta_arquivos = str(tmp_path)
 
+    # adiciona um item e remove logo em seguida
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
-
-    main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "tarefa exemplo" in resultado.out
-
+    limpar_stdout(capsys)
     main(["r", "0"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 1
+    assert Mensagens.SUCESSO_REMOVER_ATIVIDADE.value == linhas[0]
 
+    limpar_stdout(capsys)
+    # tenta remover item que não existe
+    main(["r", "0"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 1
+    assert Mensagens.ERRO_REMOVER_ATIVIDADE_INEXISTENTE.value == linhas[0]
+
+    # remove item entre outros dois itens e mantem ordem
+    main(["a", "tarefa 0"], caminho_pasta_arquivos)
+    main(["a", "tarefa 1"], caminho_pasta_arquivos)
+    main(["a", "tarefa 2"], caminho_pasta_arquivos)
+    limpar_stdout(capsys)
     main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "tarefa exemplo" not in resultado.out
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 3
+    limpar_stdout(capsys)
+    main(["r", "1"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 3
+    assert Mensagens.SUCESSO_REMOVER_ATIVIDADE.value == linhas[0]
+    assert "tarefa 0" in linhas[1]
+    assert "tarefa 2" in linhas[2]
 
 
 def test_comando_concluir_atividade(tmp_path, capsys):

@@ -4,7 +4,12 @@ import sys
 from datetime import date
 from typing import Sequence
 
-from atv.erros import DescricaoVazia, Erro, ComandoNaoImplementado
+from atv.erros import (
+    DescricaoVazia,
+    Erro,
+    ComandoNaoImplementado,
+    RemoverAtividadeInexistente,
+)
 from atv.mensagens import Mensagens
 
 CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
@@ -39,11 +44,19 @@ def ler_arquivo_de_tarefas(caminho_para_arquivo: str) -> list[str]:
     return linhas
 
 
+def nao_existe_indice_no_arquivo(indice: int, linhas: list[str]) -> bool:
+    quantidade_de_linhas: int = len(linhas)
+    return indice + 1 > quantidade_de_linhas
+
+
 def remover_linha_do_arquivo(caminho_para_arquivo: str, indice: int):
     with open(caminho_para_arquivo, "r+") as arquivo:
         linhas = arquivo.readlines()
         arquivo.seek(0)
         arquivo.truncate()
+
+        if nao_existe_indice_no_arquivo(int(indice), linhas):
+            raise RemoverAtividadeInexistente
 
         for indice_do_arquivo, linha in enumerate(linhas):
             if indice_do_arquivo != int(indice):
@@ -97,12 +110,14 @@ def comando_listar(caminho_pasta_arquivos: str):
 
 def comando_remover(indice: int, caminho_pasta_arquivos: str):
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        remover_linha_do_arquivo(caminho_para_arquivo_do_dia, indice)
+        raise RemoverAtividadeInexistente
+
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    remover_linha_do_arquivo(caminho_para_arquivo_do_dia, indice)
+
+    print(Mensagens.SUCESSO_REMOVER_ATIVIDADE.value)
 
 
 def comando_concluir(indice: int, caminho_pasta_arquivos: str):
@@ -133,6 +148,7 @@ def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str)
         comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "r":
         comando_remover(argumentos.indice, caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "c":
         comando_concluir(argumentos.indice, caminho_pasta_arquivos)
     elif argumentos.comando == "d":
