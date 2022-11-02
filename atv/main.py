@@ -1,7 +1,10 @@
 import argparse
 import os
+import sys
 from datetime import date
-from typing import Optional, Sequence
+from typing import Sequence
+
+from atv.erros import DescricaoVazia, Erro
 
 CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
 
@@ -64,6 +67,10 @@ def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str) -> int:
     if not existe_pasta_de_arquivos(caminho_pasta_arquivo):
         os.makedirs(CAMINHO_PASTA_ARQUIVOS)
 
+    descricao_eh_vazia = not descricao_tarefa.strip()
+    if descricao_eh_vazia:
+        raise DescricaoVazia
+
     caminho_para_arquivo_dia_atual = obter_caminho_arquivo_do_dia(
         date.today(), caminho_pasta_arquivo
     )
@@ -125,13 +132,31 @@ def comando_desfazer(indice: int, caminho_pasta_arquivos: str) -> int:
     return 0
 
 
-def formatar_entrada_linha_de_comando(
-    argv: Optional[Sequence[str]] = None,
-) -> argparse.Namespace:
+def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str) -> int:
+    if argumentos.comando == "a":
+        return comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
+    elif argumentos.comando == "l":
+        return comando_listar(caminho_pasta_arquivos)
+    elif argumentos.comando == "r":
+        return comando_remover(argumentos.indice, caminho_pasta_arquivos)
+    elif argumentos.comando == "c":
+        return comando_concluir(argumentos.indice, caminho_pasta_arquivos)
+    elif argumentos.comando == "d":
+        return comando_desfazer(argumentos.indice, caminho_pasta_arquivos)
+    else:
+        raise NotImplementedError(f"Comando {argumentos.comando} não implementado")
+
+
+def main(
+    argv: Sequence[str] | None = None,
+    caminho_pasta_arquivos: str = CAMINHO_PASTA_ARQUIVOS,
+) -> int:
+    argumentos = argv if argv is not None else sys.argv[1:]
     parser_principal = argparse.ArgumentParser(prog="atv")
 
     subparsers = parser_principal.add_subparsers(dest="comando")
 
+    # Adicionar
     parser_comando_adicionar = subparsers.add_parser(
         "a", help="adicionar uma nova atividade no dia atual"
     )
@@ -139,8 +164,10 @@ def formatar_entrada_linha_de_comando(
         "descricao", help="descrição da tarefa a ser feita"
     )
 
+    # Listar
     subparsers.add_parser("l", help="mostra todas as tarefas cadastradas no dia atual")
 
+    # Remover
     parser_comando_remover = subparsers.add_parser(
         "r", help="remover uma atividade no dia atual"
     )
@@ -148,6 +175,7 @@ def formatar_entrada_linha_de_comando(
         "indice", help="indice da tarefa a ser deletada"
     )
 
+    # Concluir
     parser_comando_concluir = subparsers.add_parser(
         "c", help="concluir uma atividade no dia atual"
     )
@@ -155,6 +183,7 @@ def formatar_entrada_linha_de_comando(
         "indice", help="indice da tarefa a ser deletada"
     )
 
+    # Desfazer
     parser_comando_desfazer = subparsers.add_parser(
         "d", help="marcar uma atividade do dia atual como pendente"
     )
@@ -162,35 +191,21 @@ def formatar_entrada_linha_de_comando(
         "indice", help="indice da tarefa a ser selecionada como pendente"
     )
 
-    return parser_principal.parse_args(argv)
+    if len(argumentos) == 0:
+        argumentos = ["l"]
+    argumentos_formatados = parser_principal.parse_args(argumentos)
 
-
-def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str) -> int:
-    if argumentos.comando is None:
-        return comando_listar(caminho_pasta_arquivos)
-    if argumentos.comando == "a":
-        return comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
-    if argumentos.comando == "l":
-        return comando_listar(caminho_pasta_arquivos)
-    if argumentos.comando == "r":
-        return comando_remover(argumentos.indice, caminho_pasta_arquivos)
-    if argumentos.comando == "c":
-        return comando_concluir(argumentos.indice, caminho_pasta_arquivos)
-    if argumentos.comando == "d":
-        return comando_desfazer(argumentos.indice, caminho_pasta_arquivos)
+    try:
+        executa_comando(
+            argumentos=argumentos_formatados,
+            caminho_pasta_arquivos=caminho_pasta_arquivos,
+        )
+    except Erro as erro:
+        print(erro.mensagem)
+        return 1
     else:
-        raise NotImplementedError(f"Comando {argumentos.comando} não implementado")
-
-
-def main(
-    argv: Optional[Sequence[str]] = None,
-    caminho_pasta_arquivos: str = CAMINHO_PASTA_ARQUIVOS,
-) -> int:
-    argumentos = formatar_entrada_linha_de_comando(argv)
-    return executa_comando(
-        argumentos=argumentos, caminho_pasta_arquivos=caminho_pasta_arquivos
-    )
+        return 0
 
 
 if __name__ == "__main__":
-    exit(main())
+    raise SystemExit(main())
