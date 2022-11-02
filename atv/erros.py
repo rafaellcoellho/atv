@@ -14,3 +14,8 @@ class Erro(Exception):
 @dataclass
 class DescricaoVazia(Erro):
     mensagem: str = Mensagens.ERRO_DESCRICAO_NAO_PODE_SER_VAZIA.value
+
+
+@dataclass
+class ComandoNaoImplementado(Erro):
+    mensagem: str = Mensagens.ERRO_COMANDO_NAO_IMPLEMENTADO.value

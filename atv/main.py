@@ -4,7 +4,7 @@ import sys
 from datetime import date
 from typing import Sequence
 
-from atv.erros import DescricaoVazia, Erro
+from atv.erros import DescricaoVazia, Erro, ComandoNaoImplementado
 
 CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
 
@@ -134,7 +134,7 @@ def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str)
     elif argumentos.comando == "d":
         comando_desfazer(argumentos.indice, caminho_pasta_arquivos)
     else:
-        raise NotImplementedError(f"Comando {argumentos.comando} não implementado")
+        raise ComandoNaoImplementado
 
     return 0
 
