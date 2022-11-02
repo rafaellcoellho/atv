@@ -194,7 +194,7 @@ def main(
         )
     except Erro as erro:
         print(erro.mensagem)
-        return 1
+        return erro.codigo_de_status
     else:
         return 0
 
