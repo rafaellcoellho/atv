@@ -85,19 +85,34 @@ def test_comando_remover_atividade(tmp_path, capsys):
 def test_comando_concluir_atividade(tmp_path, capsys):
     caminho_pasta_arquivos = str(tmp_path)
 
+    # adiciona uma atividade e conclui ela
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
-
-    main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "tarefa exemplo" in resultado.out
-    assert "[ ]" in resultado.out
-
+    limpar_stdout(capsys)
     main(["c", "0"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 2
+    assert Mensagens.SUCESSO_CONCLUIR_ATIVIDADE.value == linhas[0]
+    assert "[v]" in linhas[1]
+    assert "tarefa exemplo" in linhas[1]
 
-    main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "tarefa exemplo" in resultado.out
-    assert "[v]" in resultado.out
+    limpar_stdout(capsys)
+    # tenta concluir atividade que já foi concluida
+    main(["c", "0"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 2
+    assert Mensagens.SUCESSO_CONCLUIR_ATIVIDADE.value == linhas[0]
+    assert "[v]" in linhas[1]
+    assert "tarefa exemplo" in linhas[1]
+
+    limpar_stdout(capsys)
+    # tenta concluir item que não existe
+    main(["c", "1"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 1
+    assert Mensagens.ERRO_CONCLUIR_ATIVIDADE_INEXISTENTE.value == linhas[0]
 
 
 def test_comando_desfazer_atividade(tmp_path, capsys):

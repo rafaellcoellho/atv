@@ -28,3 +28,9 @@ class ComandoNaoImplementado(Erro):
 class RemoverAtividadeInexistente(Erro):
     mensagem: str = Mensagens.ERRO_REMOVER_ATIVIDADE_INEXISTENTE.value
     codigo_de_status: int = 1
+
+
+@dataclass
+class ConcluirAtividadeInexistente(Erro):
+    mensagem: str = Mensagens.ERRO_CONCLUIR_ATIVIDADE_INEXISTENTE.value
+    codigo_de_status: int = 1

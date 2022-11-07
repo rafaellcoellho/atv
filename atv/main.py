@@ -9,6 +9,7 @@ from atv.erros import (
     Erro,
     ComandoNaoImplementado,
     RemoverAtividadeInexistente,
+    ConcluirAtividadeInexistente,
 )
 from atv.mensagens import Mensagens
 
@@ -69,6 +70,9 @@ def mudar_status_de_atividade(caminho_para_arquivo: str, indice: int, status: st
         arquivo.seek(0)
         arquivo.truncate()
 
+        if nao_existe_indice_no_arquivo(int(indice), linhas):
+            raise ConcluirAtividadeInexistente
+
         for indice_do_arquivo, linha in enumerate(linhas):
             if indice_do_arquivo == int(indice):
                 descricao, _ = linha.split("|")
@@ -122,12 +126,14 @@ def comando_remover(indice: int, caminho_pasta_arquivos: str):
 
 def comando_concluir(indice: int, caminho_pasta_arquivos: str):
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "concluida")
+        raise ConcluirAtividadeInexistente
+
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "concluida")
+
+    print(Mensagens.SUCESSO_CONCLUIR_ATIVIDADE.value)
 
 
 def comando_desfazer(indice: int, caminho_pasta_arquivos: str):
@@ -151,6 +157,7 @@ def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str)
         comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "c":
         comando_concluir(argumentos.indice, caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "d":
         comando_desfazer(argumentos.indice, caminho_pasta_arquivos)
     else:
