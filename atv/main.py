@@ -4,7 +4,15 @@ import sys
 from datetime import date
 from typing import Sequence
 
-from atv.erros import DescricaoVazia, Erro
+from atv.erros import (
+    DescricaoVazia,
+    Erro,
+    ComandoNaoImplementado,
+    RemoverAtividadeInexistente,
+    ConcluirAtividadeInexistente,
+    DesfazerAtividadeInexistente,
+)
+from atv.mensagens import Mensagens
 
 CAMINHO_PASTA_ARQUIVOS = f"{os.getenv('HOME')}/.atv"
 
@@ -38,11 +46,19 @@ def ler_arquivo_de_tarefas(caminho_para_arquivo: str) -> list[str]:
     return linhas
 
 
+def nao_existe_indice_no_arquivo(indice: int, linhas: list[str]) -> bool:
+    quantidade_de_linhas: int = len(linhas)
+    return indice + 1 > quantidade_de_linhas
+
+
 def remover_linha_do_arquivo(caminho_para_arquivo: str, indice: int):
     with open(caminho_para_arquivo, "r+") as arquivo:
         linhas = arquivo.readlines()
         arquivo.seek(0)
         arquivo.truncate()
+
+        if nao_existe_indice_no_arquivo(int(indice), linhas):
+            raise RemoverAtividadeInexistente
 
         for indice_do_arquivo, linha in enumerate(linhas):
             if indice_do_arquivo != int(indice):
@@ -55,6 +71,12 @@ def mudar_status_de_atividade(caminho_para_arquivo: str, indice: int, status: st
         arquivo.seek(0)
         arquivo.truncate()
 
+        if nao_existe_indice_no_arquivo(int(indice), linhas):
+            if status == "concluida":
+                raise ConcluirAtividadeInexistente
+            else:
+                raise DesfazerAtividadeInexistente
+
         for indice_do_arquivo, linha in enumerate(linhas):
             if indice_do_arquivo == int(indice):
                 descricao, _ = linha.split("|")
@@ -63,7 +85,7 @@ def mudar_status_de_atividade(caminho_para_arquivo: str, indice: int, status: st
                 arquivo.write(linha)
 
 
-def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str) -> int:
+def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str):
     if not existe_pasta_de_arquivos(caminho_pasta_arquivo):
         os.makedirs(CAMINHO_PASTA_ARQUIVOS)
 
@@ -76,75 +98,86 @@ def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str) -> int:
     )
     escrever_tarefa_no_arquivo(descricao_tarefa, caminho_para_arquivo_dia_atual)
 
-    return 0
+    print(Mensagens.SUCESSO_ADICIONAR_ATIVIDADE.value)
 
 
-def comando_listar(caminho_pasta_arquivos: str) -> int:
+def comando_listar(caminho_pasta_arquivos: str, mostrar_mensagens: bool = False):
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        linhas = ler_arquivo_de_tarefas(caminho_para_arquivo_do_dia)
+        if mostrar_mensagens:
+            print(Mensagens.NAO_EXISTE_ATIVIDADES_PARA_LISTAR.value)
+        return
 
-        for indice, linha in enumerate(linhas):
-            descricao, situacao = linha.split("|")
-            simbolo_situacao = "v" if "concluida" in situacao else " "
-            print(f"{indice}. [{simbolo_situacao}] - {descricao}")
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    linhas = ler_arquivo_de_tarefas(caminho_para_arquivo_do_dia)
 
-    return 0
+    if len(linhas) == 0:
+        if mostrar_mensagens:
+            print(Mensagens.NAO_EXISTE_ATIVIDADES_PARA_LISTAR.value)
+        return
+
+    for indice, linha in enumerate(linhas):
+        descricao, situacao = linha.split("|")
+        simbolo_situacao = "v" if "concluida" in situacao else " "
+        print(f"{indice}. [{simbolo_situacao}] - {descricao}")
 
 
-def comando_remover(indice: int, caminho_pasta_arquivos: str) -> int:
+def comando_remover(indice: int, caminho_pasta_arquivos: str):
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        remover_linha_do_arquivo(caminho_para_arquivo_do_dia, indice)
+        raise RemoverAtividadeInexistente
 
-    return 0
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    remover_linha_do_arquivo(caminho_para_arquivo_do_dia, indice)
+
+    print(Mensagens.SUCESSO_REMOVER_ATIVIDADE.value)
 
 
-def comando_concluir(indice: int, caminho_pasta_arquivos: str) -> int:
+def comando_concluir(indice: int, caminho_pasta_arquivos: str):
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "concluida")
+        raise ConcluirAtividadeInexistente
 
-    return 0
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "concluida")
+
+    print(Mensagens.SUCESSO_CONCLUIR_ATIVIDADE.value)
 
 
-def comando_desfazer(indice: int, caminho_pasta_arquivos: str) -> int:
+def comando_desfazer(indice: int, caminho_pasta_arquivos: str):
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "pendente")
+        raise DesfazerAtividadeInexistente
 
-    return 0
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    mudar_status_de_atividade(caminho_para_arquivo_do_dia, indice, "pendente")
+
+    print(Mensagens.SUCESSO_DESFAZER_ATIVIDADE.value)
 
 
 def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str) -> int:
     if argumentos.comando == "a":
-        return comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
+        comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "l":
-        return comando_listar(caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos, mostrar_mensagens=True)
     elif argumentos.comando == "r":
-        return comando_remover(argumentos.indice, caminho_pasta_arquivos)
+        comando_remover(argumentos.indice, caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "c":
-        return comando_concluir(argumentos.indice, caminho_pasta_arquivos)
+        comando_concluir(argumentos.indice, caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "d":
-        return comando_desfazer(argumentos.indice, caminho_pasta_arquivos)
+        comando_desfazer(argumentos.indice, caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos)
     else:
-        raise NotImplementedError(f"Comando {argumentos.comando} não implementado")
+        raise ComandoNaoImplementado
+
+    return 0
 
 
 def main(
@@ -202,7 +235,7 @@ def main(
         )
     except Erro as erro:
         print(erro.mensagem)
-        return 1
+        return erro.codigo_de_status
     else:
         return 0
 
