@@ -118,20 +118,35 @@ def test_comando_concluir_atividade(tmp_path, capsys):
 def test_comando_desfazer_atividade(tmp_path, capsys):
     caminho_pasta_arquivos = str(tmp_path)
 
+    # adiciona uma atividade, conclui e depois desfaz ela
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
     main(["c", "0"], caminho_pasta_arquivos)
-
-    main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "tarefa exemplo" in resultado.out
-    assert "[v]" in resultado.out
-
+    limpar_stdout(capsys)
     main(["d", "0"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 2
+    assert Mensagens.SUCESSO_DESFAZER_ATIVIDADE.value == linhas[0]
+    assert "[ ]" in linhas[1]
+    assert "tarefa exemplo" in linhas[1]
 
-    main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "tarefa exemplo" in resultado.out
-    assert "[ ]" in resultado.out
+    limpar_stdout(capsys)
+    # tenta desfazer atividade que já não está concluida
+    main(["d", "0"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 2
+    assert Mensagens.SUCESSO_DESFAZER_ATIVIDADE.value == linhas[0]
+    assert "[ ]" in linhas[1]
+    assert "tarefa exemplo" in linhas[1]
+
+    limpar_stdout(capsys)
+    # tenta desfazer item que não existe
+    main(["d", "1"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 1
+    assert Mensagens.ERRO_DESFAZER_ATIVIDADE_INEXISTENTE.value == linhas[0]
 
 
 def test_comando_listar_atividades(tmp_path, capsys):

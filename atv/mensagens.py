@@ -12,6 +12,10 @@ class Mensagens(Enum):
     ERRO_CONCLUIR_ATIVIDADE_INEXISTENTE = (
         "A atividade nesse indice não existe para ser concluida"
     )
+    ERRO_DESFAZER_ATIVIDADE_INEXISTENTE = (
+        "A atividade nesse indice não existe para ser desfeita"
+    )
     SUCESSO_ADICIONAR_ATIVIDADE = "Atividade foi adiciona com sucesso."
     SUCESSO_REMOVER_ATIVIDADE = "Atividade foi removida com sucesso"
     SUCESSO_CONCLUIR_ATIVIDADE = "Atividade foi concluida com sucesso"
+    SUCESSO_DESFAZER_ATIVIDADE = "Atividade foi desfeita com sucesso"

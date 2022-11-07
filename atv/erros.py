@@ -34,3 +34,9 @@ class RemoverAtividadeInexistente(Erro):
 class ConcluirAtividadeInexistente(Erro):
     mensagem: str = Mensagens.ERRO_CONCLUIR_ATIVIDADE_INEXISTENTE.value
     codigo_de_status: int = 1
+
+
+@dataclass
+class DesfazerAtividadeInexistente(Erro):
+    mensagem: str = Mensagens.ERRO_DESFAZER_ATIVIDADE_INEXISTENTE.value
+    codigo_de_status: int = 1
