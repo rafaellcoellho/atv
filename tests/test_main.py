@@ -152,35 +152,46 @@ def test_comando_desfazer_atividade(tmp_path, capsys):
 def test_comando_listar_atividades(tmp_path, capsys):
     caminho_pasta_arquivos = str(tmp_path)
 
+    # tenta listar atividade antes de existir atividade
     main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "Não existe nenhuma tarefa nesse dia!" in resultado.out
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert Mensagens.NAO_EXISTE_ATIVIDADES_PARA_LISTAR.value == linhas[0]
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
-
+    limpar_stdout(capsys)
+    # adiciona atividade e checa listagem da atividade
     main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "tarefa exemplo" in resultado.out
-    assert "[ ]" in resultado.out
-    assert "0" in resultado.out
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert "tarefa exemplo" in linhas[0]
+    assert "[ ]" in linhas[0]
+    assert "0" in linhas[0]
 
-    main(["c", "0"], caminho_pasta_arquivos)
+    main(["r", "0"], caminho_pasta_arquivos)
+    limpar_stdout(capsys)
+    # tenta listar após criar uma atividade e apagar
     main(["l"], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "[v]" in resultado.out
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert Mensagens.NAO_EXISTE_ATIVIDADES_PARA_LISTAR.value == linhas[0]
 
 
 def test_listar_sem_usar_comando(tmp_path, capsys):
     caminho_pasta_arquivos = str(tmp_path)
 
+    # tenta listar atividade antes de existir atividade
     main([], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "Não existe nenhuma tarefa nesse dia!" in resultado.out
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert Mensagens.NAO_EXISTE_ATIVIDADES_PARA_LISTAR.value == linhas[0]
 
     main(["a", "tarefa exemplo"], caminho_pasta_arquivos)
-
+    limpar_stdout(capsys)
+    # adiciona atividade e checa listagem da atividade
     main([], caminho_pasta_arquivos)
-    resultado = capsys.readouterr()
-    assert "tarefa exemplo" in resultado.out
-    assert "[ ]" in resultado.out
-    assert "0" in resultado.out
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert "tarefa exemplo" in linhas[0]
+    assert "[ ]" in linhas[0]
+    assert "0" in linhas[0]

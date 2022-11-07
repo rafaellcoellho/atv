@@ -15,6 +15,7 @@ class Mensagens(Enum):
     ERRO_DESFAZER_ATIVIDADE_INEXISTENTE = (
         "A atividade nesse indice não existe para ser desfeita"
     )
+    NAO_EXISTE_ATIVIDADES_PARA_LISTAR = "Não existe atividade para mostrar nesse dia"
     SUCESSO_ADICIONAR_ATIVIDADE = "Atividade foi adiciona com sucesso"
     SUCESSO_REMOVER_ATIVIDADE = "Atividade foi removida com sucesso"
     SUCESSO_CONCLUIR_ATIVIDADE = "Atividade foi concluida com sucesso"

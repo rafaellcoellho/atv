@@ -101,19 +101,26 @@ def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str):
     print(Mensagens.SUCESSO_ADICIONAR_ATIVIDADE.value)
 
 
-def comando_listar(caminho_pasta_arquivos: str):
+def comando_listar(caminho_pasta_arquivos: str, mostrar_mensagens: bool = False):
     if not existe_arquivo_para_o_dia(date.today(), caminho_pasta_arquivos):
-        print("Não existe nenhuma tarefa nesse dia!")
-    else:
-        caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
-            date.today(), caminho_pasta_arquivos
-        )
-        linhas = ler_arquivo_de_tarefas(caminho_para_arquivo_do_dia)
+        if mostrar_mensagens:
+            print(Mensagens.NAO_EXISTE_ATIVIDADES_PARA_LISTAR.value)
+        return
 
-        for indice, linha in enumerate(linhas):
-            descricao, situacao = linha.split("|")
-            simbolo_situacao = "v" if "concluida" in situacao else " "
-            print(f"{indice}. [{simbolo_situacao}] - {descricao}")
+    caminho_para_arquivo_do_dia = obter_caminho_arquivo_do_dia(
+        date.today(), caminho_pasta_arquivos
+    )
+    linhas = ler_arquivo_de_tarefas(caminho_para_arquivo_do_dia)
+
+    if len(linhas) == 0:
+        if mostrar_mensagens:
+            print(Mensagens.NAO_EXISTE_ATIVIDADES_PARA_LISTAR.value)
+        return
+
+    for indice, linha in enumerate(linhas):
+        descricao, situacao = linha.split("|")
+        simbolo_situacao = "v" if "concluida" in situacao else " "
+        print(f"{indice}. [{simbolo_situacao}] - {descricao}")
 
 
 def comando_remover(indice: int, caminho_pasta_arquivos: str):
@@ -157,7 +164,7 @@ def executa_comando(argumentos: argparse.Namespace, caminho_pasta_arquivos: str)
         comando_adicionar(argumentos.descricao, caminho_pasta_arquivos)
         comando_listar(caminho_pasta_arquivos)
     elif argumentos.comando == "l":
-        comando_listar(caminho_pasta_arquivos)
+        comando_listar(caminho_pasta_arquivos, mostrar_mensagens=True)
     elif argumentos.comando == "r":
         comando_remover(argumentos.indice, caminho_pasta_arquivos)
         comando_listar(caminho_pasta_arquivos)
