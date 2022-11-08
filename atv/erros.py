@@ -40,3 +40,9 @@ class ConcluirAtividadeInexistente(Erro):
 class DesfazerAtividadeInexistente(Erro):
     mensagem: str = Mensagens.ERRO_DESFAZER_ATIVIDADE_INEXISTENTE.value
     codigo_de_status: int = 1
+
+
+@dataclass
+class DescricaoComQuebraDeLinha(Erro):
+    mensagem: str = Mensagens.ERRO_DESCRICAO_NAO_PODE_CONTER_QUEBRA_DE_LINHA.value
+    codigo_de_status: int = 1
