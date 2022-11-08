@@ -11,6 +11,7 @@ from atv.erros import (
     RemoverAtividadeInexistente,
     ConcluirAtividadeInexistente,
     DesfazerAtividadeInexistente,
+    DescricaoComQuebraDeLinha,
 )
 from atv.mensagens import Mensagens
 
@@ -92,6 +93,10 @@ def comando_adicionar(descricao_tarefa: str, caminho_pasta_arquivo: str):
     descricao_eh_vazia = not descricao_tarefa.strip()
     if descricao_eh_vazia:
         raise DescricaoVazia
+
+    descricao_contem_quebra_de_linha = "\n" in descricao_tarefa
+    if descricao_contem_quebra_de_linha:
+        raise DescricaoComQuebraDeLinha
 
     caminho_para_arquivo_dia_atual = obter_caminho_arquivo_do_dia(
         date.today(), caminho_pasta_arquivo

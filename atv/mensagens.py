@@ -5,6 +5,9 @@ class Mensagens(Enum):
     ERRO_DESCRICAO_NAO_PODE_SER_VAZIA = (
         "Atividade não adicionada, descrição não pode ser vazia"
     )
+    ERRO_DESCRICAO_NAO_PODE_CONTER_QUEBRA_DE_LINHA = (
+        "Atividade não adiciona, descrição não pode conter quebra de linha"
+    )
     ERRO_COMANDO_NAO_IMPLEMENTADO = "Comando não foi implementado"
     ERRO_REMOVER_ATIVIDADE_INEXISTENTE = (
         "A atividade nesse indice não existe para ser removida"

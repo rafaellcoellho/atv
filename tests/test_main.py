@@ -195,3 +195,14 @@ def test_listar_sem_usar_comando(tmp_path, capsys):
     assert "tarefa exemplo" in linhas[0]
     assert "[ ]" in linhas[0]
     assert "0" in linhas[0]
+
+
+def test_nao_permite_quebra_de_linha_em_descricao(tmp_path, capsys):
+    caminho_pasta_arquivos = str(tmp_path)
+
+    # tenta criar atividade com descrição contento quebra de linha
+    main(["a", "primeira linha\nsegunda linha"], caminho_pasta_arquivos)
+    stdout = capsys.readouterr().out
+    linhas = obter_linhas_do_stdout(stdout)
+    assert len(linhas) == 1
+    assert Mensagens.ERRO_DESCRICAO_NAO_PODE_CONTER_QUEBRA_DE_LINHA.value == linhas[0]
