@@ -1,4 +1,4 @@
-name: pre-commit
+name: ferramentas-de-analise-estatica
 
 on:
   pull_request:
