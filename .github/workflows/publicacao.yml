@@ -23,7 +23,7 @@ jobs:
       - name: criar tag
         run: git tag ${{ env.VERSAO }}
       - name: atualizar github com nova tag
-        run: git push origin $(grep -Po '\d.\d.\d' atv/__version__.py)
+        run: git push origin ${{ env.VERSAO }}
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
