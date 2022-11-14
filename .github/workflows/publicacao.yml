@@ -4,9 +4,6 @@ on:
   push:
     branches: [master]
 
-env:
-  VERSAO: $(grep -Po '\d.\d.\d' atv/__version__.py)
-
 jobs:
   publicar:
     runs-on: ubuntu-latest
@@ -20,6 +17,8 @@ jobs:
       - name: fazer build do app
         run: python -m build
 
+      - name: obter versão
+        run: echo "VERSAO=$(grep -Po '\d.\d.\d' atv/__version__.py)" >> $GITHUB_ENV
       - name: criar tag
         run: git tag ${{ env.VERSAO }}
       - name: atualizar github com nova tag
