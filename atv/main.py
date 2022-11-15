@@ -4,6 +4,7 @@ import sys
 from datetime import date
 from typing import Sequence
 
+from atv import __version__
 from atv.erros import (
     DescricaoVazia,
     Erro,
@@ -190,7 +191,28 @@ def main(
     caminho_pasta_arquivos: str = CAMINHO_PASTA_ARQUIVOS,
 ) -> int:
     argumentos = argv if argv is not None else sys.argv[1:]
-    parser_principal = argparse.ArgumentParser(prog="atv")
+    parser_principal = argparse.ArgumentParser(
+        prog="atv",
+        description="Aplicativo de linha de comando para registrar atividades diárias",
+        epilog="Autor: Rafael Coelho (rafaellcoellho@gmail.com)",
+        add_help=False,
+    )
+
+    versao = f"{__version__}"
+    parser_principal.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=versao,
+        help="mostra versão do aplicativo",
+    )
+    parser_principal.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        default=argparse.SUPPRESS,
+        help="mostra ajuda do programa",
+    )
 
     subparsers = parser_principal.add_subparsers(dest="comando")
 
