@@ -195,14 +195,23 @@ def main(
         prog="atv",
         description="Aplicativo de linha de comando para registrar atividades diárias",
         epilog="Autor: Rafael Coelho (rafaellcoellho@gmail.com)",
+        add_help=False,
     )
 
     versao = f"{__version__}"
     parser_principal.add_argument(
+        "-v",
         "--version",
         action="version",
         version=versao,
         help="mostra versão do aplicativo",
+    )
+    parser_principal.add_argument(
+        "-h",
+        "--help",
+        action="help",
+        default=argparse.SUPPRESS,
+        help="mostra ajuda do programa",
     )
 
     subparsers = parser_principal.add_subparsers(dest="comando")
