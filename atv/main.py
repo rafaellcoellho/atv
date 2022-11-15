@@ -4,6 +4,7 @@ import sys
 from datetime import date
 from typing import Sequence
 
+from atv import __version__
 from atv.erros import (
     DescricaoVazia,
     Erro,
@@ -194,6 +195,14 @@ def main(
         prog="atv",
         description="Aplicativo de linha de comando para registrar atividades diárias",
         epilog="Autor: Rafael Coelho (rafaellcoellho@gmail.com)",
+    )
+
+    versao = f"{__version__}"
+    parser_principal.add_argument(
+        "--version",
+        action="version",
+        version=versao,
+        help="mostra versão do aplicativo",
     )
 
     subparsers = parser_principal.add_subparsers(dest="comando")
