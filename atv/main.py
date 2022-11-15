@@ -190,7 +190,11 @@ def main(
     caminho_pasta_arquivos: str = CAMINHO_PASTA_ARQUIVOS,
 ) -> int:
     argumentos = argv if argv is not None else sys.argv[1:]
-    parser_principal = argparse.ArgumentParser(prog="atv")
+    parser_principal = argparse.ArgumentParser(
+        prog="atv",
+        description="Aplicativo de linha de comando para registrar atividades diárias",
+        epilog="Autor: Rafael Coelho (rafaellcoellho@gmail.com)",
+    )
 
     subparsers = parser_principal.add_subparsers(dest="comando")
 
