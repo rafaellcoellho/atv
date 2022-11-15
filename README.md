@@ -61,8 +61,3 @@ Instalar o pacote usando pip:
 ```
 pip install dist/atv/atv-0.0.0.whl
 ```
-
-## Pendente
-
-- [ ] `atv m <data>`: migrar todas as atividades não realizadas na data especificada
-para o arquivo de hoje.
