@@ -4,6 +4,12 @@ Aplicativo de linha comando para registrar atividades diárias.
 
 ![](https://github.com/rafaellcoellho/atv/como_usar.gif)
 
+<p align="center">
+  <a href="https://raw.githubusercontent.com/rafaellcoellho/atv/blob/master/como_usar.gif">
+		<img alt="como usar" src="como_usar.gif" width="600px">
+	</a>
+</p>
+
 ## Como usar
 
 - `atv a <descrição>`: Adicionar uma nova atividade no dia atual
