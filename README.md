@@ -28,13 +28,43 @@ Observações:
 
 ## Desenvolvimento
 
+#### Configurando ambiente local
+
+Instalar versão do python. Eu utilizo o [asdf](https://asdf-vm.com/), com o plugin
+[asdf-python](https://github.com/asdf-community/asdf-python) para fazer isso:
+
+```
+$ asdf install python 3.10.4
+```
+
+O arquivo `.tool-versions` vai reconhecer que nessa pasta utilizamos a versão correta:
+
+```
+$ python --version
+Python 3.10.4
+```
+
+Crio e iniciar o ambiente virtual:
+
+```
+$ virtualenv venv
+[...]
+$ . venv/bin/activate
+```
+
+Instalar as dependências de desenvolvimento:
+
+```
+$ pip install -r requirements-dev.txt
+```
+
+Instalar a configuração do pre-commit:
+
+```
+$ pre-commit install
+```
+
 #### Como rodar testes
-
-Instalar tox globalmente se não tiver instalado:
-
-```
-pip install tox
-```
 
 Rodar todos os ambientes de testes que tiver na sua máquina:
 
@@ -49,12 +79,6 @@ tox -e py310 -- tests/test_main.py::test_comando_adicionar_atividade
 ```
 
 #### Como instalar
-
-Instalar ferramenta de build usando pip:
-
-```
-pip install build
-```
 
 Construir os pacotes usando build:
 
